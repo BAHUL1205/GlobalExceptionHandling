@@ -10,24 +10,14 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.google.gson.Gson;
+import com.avizva.sevenstrings.utils.Utils;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
 	@Autowired
 	ExceptionResponse error;// singeleton pattern
 
-	private static Gson g;// using factory method
 	private static ModelAndView m;
-
-	public Gson getGson() {
-		if (g == null) {
-			g = new Gson();
-		} else {
-			return g;
-		}
-		return g;
-	}
 
 	public ModelAndView getModel(String s) {
 		if (m == null) {
@@ -46,9 +36,9 @@ public class GlobalExceptionHandler {
 	{
 		error.setErrormessage("AccesDenied");
 		error.setStatus(HttpStatus.FORBIDDEN.value());
-		String value = getGson().toJson(error);
+		String value = Utils.getGson().toJson(error);
 		ModelAndView m1 = getModel("errorpage");
-		m1.addObject(value);
+		m1.addObject("value", value);
 		return m1;
 	}
 
@@ -57,7 +47,7 @@ public class GlobalExceptionHandler {
 		// mav.addObject("errorcode", "405");
 		error.setErrormessage("Not A RequestedMethod");
 		error.setStatus(HttpStatus.METHOD_FAILURE.value());
-		String value = getGson().toJson(error);
+		String value = Utils.getGson().toJson(error);
 		ModelAndView m1 = getModel("errorpage");
 		m1.addObject("value", value);
 		return m1;
@@ -67,7 +57,7 @@ public class GlobalExceptionHandler {
 	public ModelAndView DaoLayerException() {// Dao Layer Exception
 												// "405");
 		error.setErrormessage("DAO Layer Exception");
-		String value = getGson().toJson(error);
+		String value = Utils.getGson().toJson(error);
 		ModelAndView m1 = getModel("errorpage");
 		m1.addObject("value", value);
 		return m1;
@@ -77,7 +67,7 @@ public class GlobalExceptionHandler {
 	public ModelAndView ServiceLayerException() {// service layer Exception,
 													// "405");
 		error.setErrormessage("Service Layer Exception");
-		String value = getGson().toJson(error);
+		String value = Utils.getGson().toJson(error);
 		ModelAndView m1 = getModel("errorpage");
 		m1.addObject("value", value);
 		return m1;
